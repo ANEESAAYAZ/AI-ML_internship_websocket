@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test Page</title>
+    </head>
+    <body>
+        <h1>Test Page</h1>
+        <p>This is a simple test page.</p>
+        <input type="text" id="testInput" placeholder="Type something...">
+        <button id="testButton" onclick="SendMessage()">Send</button>
+        
+        <script>
+            const ws=new WebSocket('ws://localhost:8000/ws');
+            ws.onopen=function(){
+                console.log('WebSocket connection established');
+            };
+            ws.onmessage=function(event){
+                console.log('Received message:',event.data);
+            };
+
+            function SendMessage(){
+                const message=document.getElementById("testInput").value;
+                ws.send(message);
+            }
+        </script>
+    </body>
+</html>
