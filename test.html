@@ -8,20 +8,33 @@
         <p>This is a simple test page.</p>
         <input type="text" id="testInput" placeholder="Type something...">
         <button id="testButton" onclick="SendMessage()">Send</button>
+        <div id="messages"></div>
         
         <script>
             const ws=new WebSocket('ws://localhost:8000/ws');
             ws.onopen=function(){
                 console.log('WebSocket connection established');
             };
+            ws.onclose=function(){
+                console.log('WebSocket connection closed');
+            };
+            ws.onerror=function(error){
+                console.log('WebSocket error:',error);
+            };
             ws.onmessage=function(event){
                 console.log('Received message:',event.data);
+                document.getElementById('messages').innerHTML+='<p>'+event.data+'</p>';
             };
 
-            function SendMessage(){
-                const message=document.getElementById("testInput").value;
-                ws.send(message);
-            }
+           function SendMessage(){
+                const message = document.getElementById("testInput").value;
+
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(message);
+                } else {
+                    console.log("WebSocket is not connected yet.");
+                }
+        }
         </script>
     </body>
 </html>
